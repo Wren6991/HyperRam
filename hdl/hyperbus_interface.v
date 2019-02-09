@@ -208,12 +208,15 @@ always @ (posedge clk or negedge rst_n) begin
 	end
 end
 
+// Used as a byte strobe during writes. Except when:
+//   36. The host must not drive RWDS during a write to register space.
+
 reg rwds_assert;
 always @ (posedge clk or negedge rst_n)
 	if (!rst_n)
 		rwds_assert <= 1'b0;
 	else
-		rwds_assert <= bus_state_next == S_WBURST;
+		rwds_assert <= bus_state_next == S_WBURST && !is_reg_write;
 
 reg rwds_assert_falling;
 always @ (negedge clk or negedge rst_n)

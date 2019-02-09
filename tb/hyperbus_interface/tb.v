@@ -19,12 +19,12 @@ reg                    start;         // Start a new register/DRAM access sequen
 wire                   start_rdy;     // Interface is ready to start a sequence
 reg   [W_BURSTLEN-1:0] burst_len;     // Number of halfwords to transfer (double number of bytes)
 reg   [3:0]            latency;       // Number of clocks between CA[23:16] being transferred, and first read/write data. Doubled if RWDS high during CA. >= 2
-reg   [3:0]            recovery;      // Number of clocks to wait 
+reg   [3:0]            recovery;      // Number of clocks to wait
 reg   [1:0]            capture_shmoo; // Capture DQi at 0, 180 or 360 clk degrees (0 90 180 HCLK degrees) after the DDR HCLK
 
 // Data
 
-reg   [7:0]            wdata;
+wire  [7:0]            wdata;
 wire                   wdata_rdy; // Backpressure only. Host must always provide valid data during a write transaction
 wire  [7:0]            rdata;
 wire                   rdata_vld; // Forward pressure only. Host must always accept data it has previously requested
@@ -49,10 +49,10 @@ wire                    cs_n;
 
 wire [7:0] dq;
 
-genvar i;
+genvar g;
 generate
-for (i = 0; i < 8; i = i + 1) begin: dq_tristate
-	assign dq[i] = dq_oe[i] ? dq_o[i] : 1'bz;
+for (g = 0; g < 8; g = g + 1) begin: dq_tristate
+	assign dq[g] = dq_oe[g] ? dq_o[g] : 1'bz;
 end
 endgenerate
 
@@ -115,18 +115,39 @@ s27kl0641 #(
 
 always #(0.5 * CLK_PERIOD) if (ram.PoweredUp) clk = !clk;
 
-initial begin
+// Let's just stick with big-endian for this test
+reg [31:0] rdata_shift;
+always @ (posedge clk)
+	if (rdata_vld)
+		rdata_shift <= {rdata_shift[23:0], rdata};
+
+reg [31:0] wdata_shift;
+always @ (posedge clk)
+	if (wdata_rdy)
+		wdata_shift <= wdata_shift << 8;
+
+assign wdata = wdata_shift[31:24];
+
+localparam PATTERN_LEN = 1;
+
+initial begin: stimulus
+
+	integer data_cnt;
+	reg [31:0] pattern [0:PATTERN_LEN-1];
+	integer i;
+
+	reg [31:0] data_tmp;
 
 	clk = 1'b0;
 	rst_n = 1'b0;
 
 	cmd_addr = 0;
 	start = 0;
-	burst_len = 1;
+	burst_len = 2;
 	latency = 6;
 	recovery = 0;
 	capture_shmoo = 2; // zero degree capture
-	wdata = 8'haa;
+	wdata_shift = 32'h01234567;
 
 
 	#(10 * CLK_PERIOD);
@@ -142,7 +163,30 @@ initial begin
 	#(100 * CLK_PERIOD);
 
 	@ (posedge clk);
-	cmd_addr <= 48'hc000_0000_0000; // ID reg 0 read
+	cmd_addr <= 48'hc000_0100_0000; // Config reg 0 read
+	burst_len <= 1;
+	start <= 1'b1;
+	@ (posedge clk);
+	start <= 1'b0;
+	@ (posedge clk);
+
+	data_cnt = burst_len * 2;
+	while (data_cnt > 0) begin
+		if (rdata_vld)
+			data_cnt <= data_cnt - 1'b1;
+		@ (posedge clk);
+	end
+	@ (posedge clk);
+
+	// Set latency to 3, both for RAM and bus interface :) (stored in bias -5 format...)
+	rdata_shift[7:4] = 4'b1110;
+	latency = 3;
+
+	// Register writes are latency-independent
+
+	wdata_shift[31:16] <= rdata_shift;
+	cmd_addr <= 48'h6000_0100_0000; // Config reg 0 write
+	burst_len <= 1;
 	start <= 1'b1;
 	@ (posedge clk);
 	start <= 1'b0;
@@ -150,6 +194,73 @@ initial begin
 
 	while (!start_rdy)
 		@ (posedge clk);
+
+	// Now read the register back, with new latency settings!
+	@ (posedge clk);
+	cmd_addr <= 48'hc000_0100_0000; // Config reg 0 read
+	start <= 1'b1;
+	@ (posedge clk);
+	start <= 1'b0;
+	@ (posedge clk);
+
+	data_cnt = burst_len * 2;
+	while (data_cnt > 0) begin
+		if (rdata_vld)
+			data_cnt <= data_cnt - 1'b1;
+		@ (posedge clk);
+	end
+	@ (posedge clk);
+
+	if (rdata_shift[15:0] != 16'h8fef) begin
+		$display("Unexpected confreg value");
+		$finish;
+	end
+
+	// With the unpleasantness out of the way, let's try writing a pattern into memory and reading it back
+
+
+	for (i = 0; i < PATTERN_LEN; i = i + 1)
+		pattern[i] = $random;
+
+	burst_len = 2; // 2 halfwords, 32 bits
+
+	for (i = 0; i < PATTERN_LEN; i = i + 1) begin: write_pattern
+		integer addr;
+		addr = i * 4;
+		cmd_addr <= {3'h0, 9'h0, addr[22:9], addr[8:3], 13'h0, addr[2:0]};
+		start <= 1'b1;
+		wdata_shift <= pattern[i];
+		@ (posedge clk);
+		start <= 1'b0;
+		@ (posedge clk);
+		while (!start_rdy)
+			@ (posedge clk);
+	end
+
+	for (i = 0; i < PATTERN_LEN; i = i + 1) begin: read_pattern
+		integer addr;
+		addr = i * 4;
+		cmd_addr <= {3'h4, 9'h0, addr[22:9], addr[8:3], 13'h0, addr[2:0]};
+		start <= 1'b1;
+		rdata_shift <= 0;
+		@ (posedge clk);
+		start <= 1'b0;
+		@ (posedge clk);
+
+		data_cnt = burst_len * 2;
+		while (data_cnt > 0) begin
+			if (rdata_vld)
+				data_cnt <= data_cnt - 1'b1;
+			@ (posedge clk);
+		end
+		@ (posedge clk);
+
+		if (rdata_shift != pattern[i]) begin
+			$display("Data mismatch at %h: %h (rx) != %h (tx)", addr, rdata_shift, pattern[i]);
+			$finish;
+		end
+
+	end
 
 	#(20 * CLK_PERIOD);
 	$finish;
