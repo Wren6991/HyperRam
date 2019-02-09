@@ -42,8 +42,7 @@ module hyperbus_interface #(
 	// Control
 
 	input  wire [47:0]           cmd_addr,      // Full contents of the hyperbus CA packet
-	input  wire                  start_reg,     // Start a new register access sequence
-	input  wire                  start_data,    // Start a new DRAM array access sequence
+	input  wire                  start,         // Start a new DRAM/register access sequence
 	output wire                  start_rdy,     // Interface is ready to start a sequence
 	input  wire [W_BURSTLEN-1:0] burst_len,     // Number of halfwords to transfer (double number of bytes)
 	input  wire [3:0]            latency,       // Number of clocks between CA[23:16] being transferred, and first read/write data. Doubled if RWDS high during CA. >= 2
@@ -108,30 +107,31 @@ end
 
 reg [W_BURSTLEN-1:0] cycle_ctr;
 
-reg latency_2x; // RWDS sample taken during CA phase
+reg latency_2x; // RWDS sample taken during CA phase (2 clocks in seems ok)
 always @ (posedge clk or negedge rst_n)
 	if (!rst_n)
 		latency_2x <= 1'b0;
-	else if (bus_state == S_CA && cycle_ctr == 5'h4)
+	else if (bus_state == S_CA && cycle_ctr == 5'h3 && hclk_p)
 		latency_2x <= rwds_i;
 
-reg is_reg_access;
+reg is_reg_write;
 always @ (posedge clk or negedge rst_n)
 	if (!rst_n)
-		is_reg_access <= 1'b0;
+		is_reg_write <= 1'b0;
 	else if (start_rdy)
-		is_reg_access <= start_reg;
+		is_reg_write <= start && cmd_addr[47:46] == 2'b01;
 
 reg is_write;
 always @ (posedge clk or negedge rst_n)
 	if (!rst_n)
 		is_write <= 1'b0;
-	else if (start_rdy && (start_reg || start_data))
+	else if (start && start_rdy)
 		is_write <= !cmd_addr[47];
 
 // Counter logic
 
-wire [W_BURSTLEN-1:0] latency_after_ca = (latency << latency_2x) - 5'h2;
+// - 1 because the count starts after row address (1 hclk before end of CA)
+wire [W_BURSTLEN-1:0] latency_after_ca = (latency << latency_2x) - 5'h1;
 
 always @ (posedge clk or negedge rst_n) begin
 	if (!rst_n) begin
@@ -143,7 +143,7 @@ always @ (posedge clk or negedge rst_n) begin
 			cycle_ctr <= latency_after_ca;
 			// Note that for low latency settings (2 cycles) we go straight from CA to burst if RWDS was low:
 		end else if ((bus_state == S_CA || bus_state == S_LATENCY) && (bus_state_next == S_RBURST || bus_state_next == S_WBURST)) begin
-			cycle_ctr <= is_reg_access ? 1 : burst_len;
+			cycle_ctr <= is_reg_write ? 1 : burst_len;
 		end else if (hclk_p) begin
 			// Counter transitions each time hclk returns to idle state (count full pulses, not DDR edges)
 			cycle_ctr <= cycle_ctr - 1'b1;
@@ -159,12 +159,12 @@ always @ (*) begin
 	bus_state_next = bus_state;
 	case (bus_state)
 	S_IDLE: begin
-		if (start_data || start_reg)
+		if (start)
 			bus_state_next = S_CA;
 	end
 	S_CA: begin
 		if (final_edge) begin
-			if (|latency_after_ca && !is_reg_access)
+			if (|latency_after_ca && !is_reg_write)
 				bus_state_next = S_LATENCY;
 			else
 				bus_state_next = is_write ? S_WBURST : S_RBURST;
@@ -229,7 +229,7 @@ always @ (posedge clk or negedge rst_n)
 	if (!rst_n)
 		cs_n <= 1'b1; // active high, deassert at reset
 	else
-		cs_n <= bus_state_next == S_IDLE || bus_state_next == S_RECOVERY;
+		cs_n <= bus_state_next == S_IDLE || bus_state == S_RECOVERY;
 
 // ----------------------------------------------------------------------------
 // Launch/capture flops for DQ (half-clock retiming)
@@ -295,15 +295,37 @@ always @ (posedge clk or negedge rst_n)
 // ----------------------------------------------------------------------------
 // Host interfaces
 
-assign wdata_rdy = bus_state_next == S_WBURST;
 
+// The first byte of CA packet goes straight to bus. Rest is captured and shifted:
+reg [39:0] ca_shift;
+always @ (posedge clk or negedge rst_n)
+	if (!rst_n)
+		ca_shift <= 40'h0;
+	else if (bus_state_next == S_CA && bus_state != S_CA)
+		ca_shift <= cmd_addr[39:0];
+	else
+		ca_shift <= ca_shift << 8;
+
+// Recall that dq_o_reg is delayed by half a clk before appearing on bus,
+// and is captured on the *following* HCLK transition.
 always @ (posedge clk or negedge rst_n)
 	if (!rst_n)
 		dq_o_reg <= 8'h0;
+	else if (bus_state_next == S_CA)
+		dq_o_reg <= bus_state == S_CA ? ca_shift[39:32] : cmd_addr[47:40];
 	else
 		dq_o_reg <= wdata;
 
-assign rdata_vld = bus_state_prev == S_RBURST;
+assign wdata_rdy = bus_state_next == S_WBURST;
+
+reg [1:0] rdata_vld_reg;
+always @ (posedge clk or negedge rst_n)
+	if (!rst_n)
+		rdata_vld_reg <= 2'b00;
+	else
+		rdata_vld_reg <= {rdata_vld_reg[0], bus_state_prev == S_RBURST};
+
+assign rdata_vld = rdata_vld_reg[1];
 assign rdata = dq_i_reg;
 
 assign start_rdy = bus_state == S_IDLE;
