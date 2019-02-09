@@ -4,6 +4,8 @@ localparam CLK_PERIOD = 10.0;
 
 localparam W_BURSTLEN = 5;
 
+// ----------------------------------------------------------------------------
+// Interconnect
 
 reg                    clk;
 reg                    rst_n;
@@ -28,11 +30,11 @@ wire                   rdata_vld; // Forward pressure only. Host must always acc
 
 // HyperBus
 
-reg   [7:0]            dq_i;
+wire  [7:0]            dq_i;
 wire  [7:0]            dq_o;
 wire  [7:0]            dq_oe;
 
-reg                    rwds_i;
+wire                   rwds_i;
 wire                   rwds_o;
 wire                   rwds_oe;
 
@@ -41,10 +43,30 @@ wire                   hclk_n;
 
 wire                    cs_n;
 
+// ----------------------------------------------------------------------------
+// Tristating
+
+wire [7:0] dq;
+
+genvar i;
+generate
+for (i = 0; i < 8; i = i + 1) begin: dq_tristate
+	assign dq[i] = dq_oe[i] ? dq_o[i] : 1'bz;
+end
+endgenerate
+
+assign dq_i = dq;
+
+wire rwds = rwds_oe ? rwds_o : 1'bz;
+assign rwds_i = rwds;
+
+
+// ----------------------------------------------------------------------------
+// Instantiate DUT and models
 
 hyperbus_interface #(
 	.W_BURSTLEN(W_BURSTLEN)
-) inst_hyperbus_interface (
+) dut (
 	.clk           (clk),
 	.rst_n         (rst_n),
 	.cmd_addr      (cmd_addr),
@@ -67,8 +89,45 @@ hyperbus_interface #(
 	.rwds_oe       (rwds_oe),
 	.hclk_p        (hclk_p),
 	.hclk_n        (hclk_n),
-	.cs_n          (cs_n),
+	.cs_n          (cs_n)
 );
+
+
+s27kl0641 #(
+	.UserPreload(0)//,
+	// .mem_file_name(mem_file_name),
+	// .TimingModel(TimingModel),
+	// .PartID(PartID),
+	// .MaxData(MaxData),
+	// .MemSize(MemSize),
+	// .HiAddrBit(HiAddrBit),
+	// .AddrRANGE(AddrRANGE),
+	// .POWER_ON(POWER_ON),
+	// .ACT(ACT),
+	// .RESET_STATE(RESET_STATE),
+	// .DPD_STATE(DPD_STATE),
+	// .STAND_BY(STAND_BY),
+	// .CA_BITS(CA_BITS),
+	// .DATA_BITS(DATA_BITS),
+	// .LINEAR(LINEAR),
+	// .CONTINUOUS(CONTINUOUS)
+) inst_s27kl0641 (
+	.DQ7      (dq[7]),
+	.DQ6      (dq[6]),
+	.DQ5      (dq[5]),
+	.DQ4      (dq[4]),
+	.DQ3      (dq[3]),
+	.DQ2      (dq[2]),
+	.DQ1      (dq[1]),
+	.DQ0      (dq[0]),
+	.RWDS     (rwds),
+	.CSNeg    (cs_n),
+	.CK       (hclk_p),
+	.RESETNeg (rst_n)
+);
+
+// ----------------------------------------------------------------------------
+// Stimulus
 
 initial clk = 1'b0;
 always #(0.5 * CLK_PERIOD) clk = !clk;
@@ -81,16 +140,21 @@ initial begin
 	start_reg = 0;
 	start_data = 0;
 	burst_len = 0;
-	latency = 0;
+	latency = 4;
 	recovery = 0;
 	capture_shmoo = 0;
 	wdata = 0;
-	dq_i = 0;
-	rwds_i = 0;
-	
+
 	#(10 * CLK_PERIOD)
 	rst_n = 1'b1;
 
+	# (5 * CLK_PERIOD);
+
+	@ (posedge clk);
+	cmd_addr <= 48'hc0000000; // ID reg 0
+	start_reg <= 1'b1;
+	@ (posedge clk);
+	start_reg <= 1'b0;
 	#(10 * CLK_PERIOD);
 	$finish;
 end

@@ -49,7 +49,7 @@ module hyperbus_interface #(
 	input  wire [3:0]            latency,       // Number of clocks between CA[23:16] being transferred, and first read/write data. Doubled if RWDS high during CA. >= 2
 	input  wire [3:0]            recovery,      // Number of clocks to wait 
 	input  wire [1:0]            capture_shmoo, // Capture DQi at 0, 180 or 360 clk degrees (0 90 180 HCLK degrees) after the DDR HCLK
-	                                            // edge which causes it to transition to *next* data. 0 probably correct for almost all speeds.
+	                                            // edge which causes it to transition to *next* data. 0 degrees probably correct for almost all speeds.
 	                                            // 2 -> 0 degrees
 	                                            // 1 -> 180 degrees
 	                                            // 0 -> 360 degrees
@@ -143,7 +143,7 @@ always @ (posedge clk or negedge rst_n) begin
 			cycle_ctr <= latency_after_ca;
 			// Note that for low latency settings (2 cycles) we go straight from CA to burst if RWDS was low:
 		end else if ((bus_state == S_CA || bus_state == S_LATENCY) && (bus_state_next == S_RBURST || bus_state_next == S_WBURST)) begin
-			cycle_ctr <= burst_len;
+			cycle_ctr <= is_reg_access ? 1 : burst_len;
 		end else if (hclk_p) begin
 			// Counter transitions each time hclk returns to idle state (count full pulses, not DDR edges)
 			cycle_ctr <= cycle_ctr - 1'b1;
@@ -175,6 +175,10 @@ always @ (*) begin
 			bus_state_next = is_write ? S_WBURST : S_RBURST;
 	end
 	S_RBURST: begin
+		if (final_edge)
+			bus_state_next = S_RECOVERY;
+	end
+	S_WBURST: begin
 		if (final_edge)
 			bus_state_next = S_RECOVERY;
 	end

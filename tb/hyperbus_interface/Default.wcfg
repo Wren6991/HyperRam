@@ -9,217 +9,116 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="52" />
-   <wvobject fp_name="/tb/inst_hyperbus_interface/clk" type="logic" db_ref_id="1">
+   <WVObjectSize size="25" />
+   <wvobject fp_name="divider81" type="divider">
+      <obj_property name="label">Control interface</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/clk" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/rst_n" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb/rst_n" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">rst_n</obj_property>
       <obj_property name="ObjectShortName">rst_n</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/cmd_addr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cmd_addr[47:0]</obj_property>
-      <obj_property name="ObjectShortName">cmd_addr[47:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/start_reg" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">start_reg</obj_property>
-      <obj_property name="ObjectShortName">start_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/start_data" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb/start_data" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">start_data</obj_property>
       <obj_property name="ObjectShortName">start_data</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/start_rdy" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb/start_reg" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">start_reg</obj_property>
+      <obj_property name="ObjectShortName">start_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/start_rdy" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">start_rdy</obj_property>
       <obj_property name="ObjectShortName">start_rdy</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/burst_len" type="array" db_ref_id="1">
+   <wvobject fp_name="/tb/burst_len" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">burst_len[4:0]</obj_property>
       <obj_property name="ObjectShortName">burst_len[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/latency" type="array" db_ref_id="1">
+   <wvobject fp_name="/tb/latency" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">latency[3:0]</obj_property>
       <obj_property name="ObjectShortName">latency[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/recovery" type="array" db_ref_id="1">
+   <wvobject fp_name="/tb/recovery" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">recovery[3:0]</obj_property>
       <obj_property name="ObjectShortName">recovery[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/capture_shmoo" type="array" db_ref_id="1">
+   <wvobject fp_name="/tb/capture_shmoo" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">capture_shmoo[1:0]</obj_property>
       <obj_property name="ObjectShortName">capture_shmoo[1:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/wdata" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">wdata[7:0]</obj_property>
-      <obj_property name="ObjectShortName">wdata[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/wdata_rdy" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wdata_rdy</obj_property>
-      <obj_property name="ObjectShortName">wdata_rdy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/rdata" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">rdata[7:0]</obj_property>
-      <obj_property name="ObjectShortName">rdata[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/rdata_vld" type="logic" db_ref_id="1">
+   <wvobject fp_name="divider91" type="divider">
+      <obj_property name="label">HRAM interface</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">rdata_vld</obj_property>
-      <obj_property name="ObjectShortName">rdata_vld</obj_property>
-      <obj_property name="label">rdata_vld</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/dq_i" type="array" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">dq_i[7:0]</obj_property>
-      <obj_property name="ObjectShortName">dq_i[7:0]</obj_property>
-      <obj_property name="label">dq_i[7:0]</obj_property>
+   <wvobject fp_name="/tb/dq" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dq[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dq[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/dq_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">dq_o[7:0]</obj_property>
-      <obj_property name="ObjectShortName">dq_o[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/dq_oe" type="array" db_ref_id="1">
+   <wvobject fp_name="/tb/dq_oe" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">dq_oe[7:0]</obj_property>
       <obj_property name="ObjectShortName">dq_oe[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/rwds_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">rwds_i</obj_property>
-      <obj_property name="ObjectShortName">rwds_i</obj_property>
+   <wvobject fp_name="/tb/rwds" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rwds</obj_property>
+      <obj_property name="ObjectShortName">rwds</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/rwds_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">rwds_o</obj_property>
-      <obj_property name="ObjectShortName">rwds_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/rwds_oe" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb/rwds_oe" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">rwds_oe</obj_property>
       <obj_property name="ObjectShortName">rwds_oe</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/latency_after_ca" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">latency_after_ca[4:0]</obj_property>
-      <obj_property name="ObjectShortName">latency_after_ca[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/final_edge" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">final_edge</obj_property>
-      <obj_property name="ObjectShortName">final_edge</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/drive_clk" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">drive_clk</obj_property>
-      <obj_property name="ObjectShortName">drive_clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/dq_i_delay" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">dq_i_delay[7:0]</obj_property>
-      <obj_property name="ObjectShortName">dq_i_delay[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/rdata_rdy" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">rdata_rdy</obj_property>
-      <obj_property name="ObjectShortName">rdata_rdy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/hclk_p" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">hclk_p</obj_property>
-      <obj_property name="ObjectShortName">hclk_p</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/hclk_n" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">hclk_n</obj_property>
-      <obj_property name="ObjectShortName">hclk_n</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/cs_n" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb/cs_n" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">cs_n</obj_property>
       <obj_property name="ObjectShortName">cs_n</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/hrst_n" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">hrst_n</obj_property>
-      <obj_property name="ObjectShortName">hrst_n</obj_property>
+   <wvobject fp_name="/tb/hclk_p" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">hclk_p</obj_property>
+      <obj_property name="ObjectShortName">hclk_p</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/bus_state_next" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">bus_state_next[2:0]</obj_property>
-      <obj_property name="ObjectShortName">bus_state_next[2:0]</obj_property>
+   <wvobject fp_name="divider98" type="divider">
+      <obj_property name="label">DUT State</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/bus_state" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">bus_state[2:0]</obj_property>
-      <obj_property name="ObjectShortName">bus_state[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/bus_state_prev" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">bus_state_prev[2:0]</obj_property>
-      <obj_property name="ObjectShortName">bus_state_prev[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/cycle_ctr" type="array" db_ref_id="1">
+   <wvobject fp_name="/tb/dut/cycle_ctr" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">cycle_ctr[4:0]</obj_property>
       <obj_property name="ObjectShortName">cycle_ctr[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/latency_2x" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb/dut/bus_state" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">bus_state[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/bus_state_next" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bus_state_next[2:0]</obj_property>
+      <obj_property name="ObjectShortName">bus_state_next[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/latency_2x" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">latency_2x</obj_property>
       <obj_property name="ObjectShortName">latency_2x</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/is_reg_access" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb/dut/is_reg_access" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">is_reg_access</obj_property>
       <obj_property name="ObjectShortName">is_reg_access</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/is_write" type="logic" db_ref_id="1">
+   <wvobject fp_name="/tb/dut/is_write" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">is_write</obj_property>
       <obj_property name="ObjectShortName">is_write</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/rwds_assert" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">rwds_assert</obj_property>
-      <obj_property name="ObjectShortName">rwds_assert</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/rwds_assert_falling" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">rwds_assert_falling</obj_property>
-      <obj_property name="ObjectShortName">rwds_assert_falling</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/dq_o_reg" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">dq_o_reg[7:0]</obj_property>
-      <obj_property name="ObjectShortName">dq_o_reg[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/dq_o_reg_falling" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">dq_o_reg_falling[7:0]</obj_property>
-      <obj_property name="ObjectShortName">dq_o_reg_falling[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/dq_oe_reg" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">dq_oe_reg</obj_property>
-      <obj_property name="ObjectShortName">dq_oe_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/dq_oe_reg_falling" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">dq_oe_reg_falling</obj_property>
-      <obj_property name="ObjectShortName">dq_oe_reg_falling</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/dq_i_reg" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">dq_i_reg[7:0]</obj_property>
-      <obj_property name="ObjectShortName">dq_i_reg[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/W_BURSTLEN" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">W_BURSTLEN[31:0]</obj_property>
-      <obj_property name="ObjectShortName">W_BURSTLEN[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/W_STATE" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">W_STATE[31:0]</obj_property>
-      <obj_property name="ObjectShortName">W_STATE[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/S_IDLE" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">S_IDLE[2:0]</obj_property>
-      <obj_property name="ObjectShortName">S_IDLE[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/S_SETUP" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">S_SETUP[2:0]</obj_property>
-      <obj_property name="ObjectShortName">S_SETUP[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/S_CA" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">S_CA[2:0]</obj_property>
-      <obj_property name="ObjectShortName">S_CA[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/S_LATENCY" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">S_LATENCY[2:0]</obj_property>
-      <obj_property name="ObjectShortName">S_LATENCY[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/S_RBURST" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">S_RBURST[2:0]</obj_property>
-      <obj_property name="ObjectShortName">S_RBURST[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/S_WBURST" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">S_WBURST[2:0]</obj_property>
-      <obj_property name="ObjectShortName">S_WBURST[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/inst_hyperbus_interface/S_RECOVERY" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">S_RECOVERY[2:0]</obj_property>
-      <obj_property name="ObjectShortName">S_RECOVERY[2:0]</obj_property>
+   <wvobject fp_name="/tb/dut/final_edge" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">final_edge</obj_property>
+      <obj_property name="ObjectShortName">final_edge</obj_property>
    </wvobject>
 </wave_config>
