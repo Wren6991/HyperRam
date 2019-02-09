@@ -1,0 +1,51 @@
+##########################################
+Date (DD/MM/YYYY)  - 17/06/2015
+
+Model name         - S27KL0641
+
+Vendor             - Spansion
+
+Publication ID     - Spansion, Publication Number HBP_DRS_2_150508.pdf
+
+
+VITAL model author -  Marko Stojanovic
+                      m-stojanovic@hdl-dh.com
+##########################################
+INITIAL RELEASE
+
+# Release Label             => vital-amd-REL-s27kl0641-2015-07-14-1.tar.gz
+# Release Date (DD/MM/YYYY) => 14/07/2015
+# Release Version           => 1.0
+##########################################
+RELEASE 1.1
+
+# Release Label             => vital-amd-REL-s27kl0641-2015-11-10-1.tar.gz
+# Release Date (DD/MM/YYYY) => 10/11/2015
+# Release Version           => 1.1
+
+# Corrections:
+- Changed name from "BUFFER" to "BUFFERs27kl0641" (bug #492 fixed)
+
+# Files modified
+- s27kl0641.v
+- s27kl0641.ftmv
+- s27kl0641_verilog.sdf
+##########################################
+RELEASE 1.2
+
+# Release Label             => vital-amd-REL-s27kl0641-2016-03-05-1.tar.gz
+# Release Date (DD/MM/YYYY) => 05/03/2016
+# Release Version           => 1.2
+
+# Corrections:
+- Changed tDSV time (bug #500 fixed)
+
+# Files modified
+- s27kl0641.v
+- s27kl0641.vhd
+- s27kl0641.ftmv
+- s27kl0641.ftm
+- s27kl0641_verilog.sdf
+- s27kl0641_vhdl.sdf
+- testbench_s27kl0641_vhdl.vhd
+##########################################

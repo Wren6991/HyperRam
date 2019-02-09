@@ -1,0 +1,94 @@
+<!DOCTYPE FTML SYSTEM "ftml.dtd">
+<FTML><HEAD><TITLE>FMF Timing for s27kl0641 Parts</TITLE></HEAD>
+<BODY>
+<REVISION.HISTORY>
+version: |  author:     |  mod date: |  changes made:
+  V1.0    M.Stojanovic    15 June 17    Initial release
+  V1.1    M.Stojanovic    15 Nov 10     Changed name from "BUFFER" to "BUFFERs27kl0641"
+                                        (bug #492 fixed)
+  V1.2    M.Stojanovic    16 Mar 01     Changed tDSV time (bug #500 fixed)
+</REVISION.HISTORY>
+<TIMESCALE>1ns</TIMESCALE>
+<MODEL>s27kl0641</MODEL>
+<FMFTIME>
+S27KL0641DABHI000<SOURCE>Spansion, Publication Number HBP_DRS_2_150508.pdf Revision 2 Issue Date May 8,2015</SOURCE>
+S27KL0641DABHI003<SOURCE>Spansion, Publication Number HBP_DRS_2_150508.pdf Revision 2 Issue Date May 8,2015</SOURCE>
+S27KL0641DABHV000<SOURCE>Spansion, Publication Number HBP_DRS_2_150508.pdf Revision 2 Issue Date May 8,2015</SOURCE>
+S27KL0641DABHV003<SOURCE>Spansion, Publication Number HBP_DRS_2_150508.pdf Revision 2 Issue Date May 8,2015</SOURCE>
+<COMMENT>The values listed are for TA=-40 to +85 Celsius, VCC=+3.0V </COMMENT>
+<TIMING>
+(DELAY (ABSOLUTE
+    (IOPATH CSNeg DQ0 () () (2:4:7) () (2:4:7) ())
+    (IOPATH CSNeg DQ1 () () (2:4:7) () (2:4:7) ())
+    (IOPATH CSNeg DQ2 () () (2:4:7) () (2:4:7) ())
+    (IOPATH CSNeg DQ3 () () (2:4:7) () (2:4:7) ())
+    (IOPATH CSNeg DQ4 () () (2:4:7) () (2:4:7) ())
+    (IOPATH CSNeg DQ5 () () (2:4:7) () (2:4:7) ())
+    (IOPATH CSNeg DQ6 () () (2:4:7) () (2:4:7) ())
+    (IOPATH CSNeg DQ7 () () (2:4:7) () (2:4:7) ())
+
+    (IOPATH CSNeg RWDS () () (2:4:7) (4:8:12) (2:4:7) (4:8:12))
+
+    (IOPATH CK DQ0 (4.3:4.8:6.3) (4.3:4.8:6.3) () (4.3:4.8:6.3) () (4.3:4.8:6.3))
+    (IOPATH CK DQ1 (4.3:4.8:6.3) (4.3:4.8:6.3) () (4.3:4.8:6.3) () (4.3:4.8:6.3))
+    (IOPATH CK DQ2 (4.3:4.8:6.3) (4.3:4.8:6.3) () (4.3:4.8:6.3) () (4.3:4.8:6.3))
+    (IOPATH CK DQ3 (4.3:4.8:6.3) (4.3:4.8:6.3) () (4.3:4.8:6.3) () (4.3:4.8:6.3))
+    (IOPATH CK DQ4 (4.3:4.8:6.3) (4.3:4.8:6.3) () (4.3:4.8:6.3) () (4.3:4.8:6.3))
+    (IOPATH CK DQ5 (4.3:4.8:6.3) (4.3:4.8:6.3) () (4.3:4.8:6.3) () (4.3:4.8:6.3))
+    (IOPATH CK DQ6 (4.3:4.8:6.3) (4.3:4.8:6.3) () (4.3:4.8:6.3) () (4.3:4.8:6.3))
+    (IOPATH CK DQ7 (4.3:4.8:6.3) (4.3:4.8:6.3) () (4.3:4.8:6.3) () (4.3:4.8:6.3))
+
+    (IOPATH CK RWDS (3.5:4:5.5) (3.5:4:5.5) () () () ())
+
+  ))
+  (TIMINGCHECK
+
+    (SETUP CSNeg CK (3))
+
+    (SETUP  DQ0 CK (1))
+    (SETUP  DQ1 CK (1))
+    (SETUP  DQ2 CK (1))
+    (SETUP  DQ3 CK (1))
+    (SETUP  DQ4 CK (1))
+    (SETUP  DQ5 CK (1))
+    (SETUP  DQ6 CK (1))
+    (SETUP  DQ7 CK (1))
+
+    (HOLD CSNeg RESETNeg (200))
+
+    (HOLD CSNeg CK (0))
+
+    (HOLD DQ0 CK (1))
+    (HOLD DQ1 CK (1))
+    (HOLD DQ2 CK (1))
+    (HOLD DQ3 CK (1))
+    (HOLD DQ4 CK (1))
+    (HOLD DQ5 CK (1))
+    (HOLD DQ6 CK (1))
+    (HOLD DQ7 CK (1))
+
+    (RECOVERY (posedge CSNeg) (negedge CK) (40))
+
+    (SKEW (negedge CSNeg) (posedge CSNeg) (4000))
+
+    (WIDTH (negedge CK) (4.5))
+    (WIDTH (posedge CK) (4.5))
+    (WIDTH (posedge CSNeg) (10))
+    (WIDTH (negedge RESETNeg) (200))
+
+    (PERIOD  CK (10))
+))
+ (CELL
+  (CELLTYPE "BUFFERs27kl0641")
+  (INSTANCE dut/BUF_RWDS)
+  (DELAY (ABSOLUTE (DEVICE OUT (3.5:4:5.5)))))
+ (CELL
+  (CELLTYPE "BUFFERs27kl0641")
+  (INSTANCE dut/BUF_RWDSR)
+  (DELAY (ABSOLUTE (DEVICE OUT (2:4:6)))))
+ (CELL
+  (CELLTYPE "BUFFERs27kl0641")
+  (INSTANCE dut/BUF_DOut)
+  (DELAY (ABSOLUTE (DEVICE OUT (4.3:4.8:6.3))))
+</TIMING></FMFTIME>
+</BODY></FTML>
