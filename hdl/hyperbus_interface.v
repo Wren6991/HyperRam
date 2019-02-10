@@ -225,7 +225,8 @@ always @ (negedge clk or negedge rst_n)
 	else
 		rwds_assert_falling <= rwds_assert;
 
-assign rwds_o = 1'b1;
+// Active-LOW byte strobe
+assign rwds_o = 1'b0;
 assign rwds_oe = rwds_assert_falling;
 
 always @ (posedge clk or negedge rst_n)

@@ -128,7 +128,31 @@ always @ (posedge clk)
 
 assign wdata = wdata_shift[31:24];
 
-localparam PATTERN_LEN = 1;
+localparam PATTERN_LEN = 1000;
+
+task wait_for_write;
+begin
+
+	@ (posedge clk);
+
+	while (!start_rdy)
+		@ (posedge clk);
+end
+endtask
+
+task wait_for_read;
+begin: wait_for_read_blk
+	integer data_cnt;
+	data_cnt = burst_len * 2;
+	@ (posedge clk);
+	while (data_cnt > 0) begin
+		if (rdata_vld)
+			data_cnt <= data_cnt - 1'b1;
+		@ (posedge clk);
+	end
+	@ (posedge clk);
+end
+endtask
 
 initial begin: stimulus
 
@@ -168,15 +192,8 @@ initial begin: stimulus
 	start <= 1'b1;
 	@ (posedge clk);
 	start <= 1'b0;
-	@ (posedge clk);
 
-	data_cnt = burst_len * 2;
-	while (data_cnt > 0) begin
-		if (rdata_vld)
-			data_cnt <= data_cnt - 1'b1;
-		@ (posedge clk);
-	end
-	@ (posedge clk);
+	wait_for_read;
 
 	// Set latency to 3, both for RAM and bus interface :) (stored in bias -5 format...)
 	rdata_shift[7:4] = 4'b1110;
@@ -190,10 +207,8 @@ initial begin: stimulus
 	start <= 1'b1;
 	@ (posedge clk);
 	start <= 1'b0;
-	@ (posedge clk);
 
-	while (!start_rdy)
-		@ (posedge clk);
+	wait_for_write;
 
 	// Now read the register back, with new latency settings!
 	@ (posedge clk);
@@ -203,13 +218,7 @@ initial begin: stimulus
 	start <= 1'b0;
 	@ (posedge clk);
 
-	data_cnt = burst_len * 2;
-	while (data_cnt > 0) begin
-		if (rdata_vld)
-			data_cnt <= data_cnt - 1'b1;
-		@ (posedge clk);
-	end
-	@ (posedge clk);
+	wait_for_read;
 
 	if (rdata_shift[15:0] != 16'h8fef) begin
 		$display("Unexpected confreg value");
@@ -226,34 +235,25 @@ initial begin: stimulus
 
 	for (i = 0; i < PATTERN_LEN; i = i + 1) begin: write_pattern
 		integer addr;
-		addr = i * 4;
+		addr = i * 2; // address is in halwords
 		cmd_addr <= {3'h0, 9'h0, addr[22:9], addr[8:3], 13'h0, addr[2:0]};
 		start <= 1'b1;
 		wdata_shift <= pattern[i];
 		@ (posedge clk);
 		start <= 1'b0;
-		@ (posedge clk);
-		while (!start_rdy)
-			@ (posedge clk);
+		wait_for_write;
 	end
 
 	for (i = 0; i < PATTERN_LEN; i = i + 1) begin: read_pattern
 		integer addr;
-		addr = i * 4;
+		addr = i * 2;
 		cmd_addr <= {3'h4, 9'h0, addr[22:9], addr[8:3], 13'h0, addr[2:0]};
 		start <= 1'b1;
 		rdata_shift <= 0;
 		@ (posedge clk);
 		start <= 1'b0;
-		@ (posedge clk);
 
-		data_cnt = burst_len * 2;
-		while (data_cnt > 0) begin
-			if (rdata_vld)
-				data_cnt <= data_cnt - 1'b1;
-			@ (posedge clk);
-		end
-		@ (posedge clk);
+		wait_for_read;
 
 		if (rdata_shift != pattern[i]) begin
 			$display("Data mismatch at %h: %h (rx) != %h (tx)", addr, rdata_shift, pattern[i]);
